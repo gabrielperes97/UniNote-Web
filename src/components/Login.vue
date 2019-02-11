@@ -1,9 +1,7 @@
 <template>
-    <div>
-    <div style="height: 10%;"></div>
-    <div class="panel">
-        <div class="panel-content">
-        <h1>UniNote</h1>
+<v-card>
+    <v-card-text>
+        <p class="text-xs-center title font-weight-bold">UniNote</p>
         <v-tabs 
             centered
             v-model="active"
@@ -80,9 +78,8 @@
                 </v-card>
             </v-tab-item>
         </v-tabs>
-        </div>
-    </div>
-    </div>
+    </v-card-text>
+</v-card>
 </template>
 
 <script>
@@ -105,7 +102,7 @@ export default {
     background-color: #FFF;
 }
 
-.panel-content {
+.title {
     text-align: center;
 }
 

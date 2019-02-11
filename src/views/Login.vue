@@ -1,10 +1,12 @@
 <template>
-  <v-app class="login"> 
-    <div>
-      <v-content>
+  <v-app class="login">
+  <v-container grid-list-xl text-xs-center>
+    <v-layout row wrap>
+      <v-flex xl4 offset-xl4 lg4 offset-lg4 md6 offset-md3 sm8 offset-sm2 xs12>
         <Login/>
-      </v-content>
-    </div>
+      </v-flex>
+    </v-layout>
+  </v-container>
   </v-app>
 </template>
 
