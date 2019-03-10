@@ -14,7 +14,7 @@
                 <v-card-text>
                     <v-form>
                         <v-text-field
-                            prepend-icon="alternate_email"
+                            prepend-icon="person"
                             v-model="email"
                             label="E-Mail"
                             required
@@ -66,6 +66,14 @@
                                 @blur="$v.lastName.$touch()"
                             ></v-text-field>
                             <v-text-field
+                                v-model="username"
+                                label="Username"
+                                required
+                                :error-messages="usernameErrors"
+                                @input="$v.username.$touch()"
+                                @blur="$v.username.$touch()"
+                            ></v-text-field>
+                            <v-text-field
                                 v-model="email"
                                 label="E-mail"
                                 required
@@ -84,7 +92,7 @@
                                 @input="$v.password.$touch()"
                                 @blur="$v.password.$touch()"
                             ></v-text-field>
-                            <v-btn color="primary">Sign-Up</v-btn>
+                            <v-btn color="primary" @click="signup">Sign-Up</v-btn>
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -106,6 +114,7 @@ export default {
   validations: {
       firstName: { required, minLength: minLength(4) },
       lastName: { required },
+      username: { required, minLength: minLength(6) },
       email: { required, email },
       password: { required, minLength: minLength(8) },
   },
@@ -117,6 +126,7 @@ export default {
       password: '',
       firstName: '',
       lastName: '',
+      username: '',
     };
   },
 
@@ -147,14 +157,32 @@ export default {
       !this.$v.password.required && errors.push('Password is required');
       return errors;
     },
+    usernameErrors() {
+      const errors = [];
+      if (!this.$v.username.$dirty) return errors;
+      !this.$v.username.minLength && errors.push('Username must be at least 6 characters long');
+      !this.$v.username.required && errors.push('Username is required');
+      return errors;
+    },
   },
 
   methods: {
     signinf() {
       this.$v.$touch();
     },
-    signup_f() {
+    signup() {
       this.$v.$touch();
+
+
+      this.$http.post('http://127.0.0.1:3000/user', {
+          firstname: firstName,
+          lastname: lastName,
+          username,
+          email,
+          password,
+      }).then(response => {
+        
+      });
     },
   },
 };
