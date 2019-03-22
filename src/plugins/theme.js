@@ -9,7 +9,7 @@ export default {
   warning: '#ffc107',
   info: '#ff5722',
   success: '#2196f3',
-  /*primary: {
+  /* primary: {
     base: '#673ab7',
     darken1: colors.purple.darken2,
   },

@@ -15,26 +15,35 @@
                     <v-form>
                         <v-text-field
                             prepend-icon="person"
-                            v-model="email"
-                            label="E-Mail"
+                            v-model="username"
+                            label="Username"
                             required
-                            :error-messages="emailErrors"
-                            @input="$v.email.$touch()"
-                            @blur="$v.email.$touch()"
+                            :error-messages="usernameErrors"
+                            @input="$v.username.$touch()"
+                            @blur="$v.username.$touch()"
                         ></v-text-field>
                         <v-text-field
                             prepend-icon="lock"
                             v-model="password"
+                            label="Password"
+                            required
                             :append-icon="showPassword ? 'visibility_off' : 'visibility'"
                             :type="showPassword ? 'text' : 'password'"
-                            label="Password"
-                            @click:append="showPassword = !showPassword"
-                            required
                             :error-messages="passErrors"
+                            @click:append="showPassword = !showPassword"
                             @input="$v.password.$touch()"
                             @blur="$v.password.$touch()"
                         ></v-text-field>
-                        <v-btn color="primary">Sign-In</v-btn>
+                        <v-alert
+                            :value="loginError"
+                            type="error"
+                            transition="scale-transition"
+                            dismissible
+                        >
+                        {{ loginErrorMessage }}
+                        Usuário ou senha inválidos.
+                        </v-alert>
+                        <v-btn color="primary" @click="signin">Sign-In</v-btn>
                     </v-form>
                 </v-card-text>
             </v-card>
@@ -83,12 +92,12 @@
                             ></v-text-field>
                             <v-text-field
                                 v-model="password"
+                                label="Password"
+                                required
                                 :append-icon="showPassword ? 'visibility_off' : 'visibility'"
                                 :type="showPassword ? 'text' : 'password'"
-                                label="Password"
-                                @click:append="showPassword = !showPassword"
-                                required
                                 :error-messages="passErrors"
+                                @click:append="showPassword = !showPassword"
                                 @input="$v.password.$touch()"
                                 @blur="$v.password.$touch()"
                             ></v-text-field>
@@ -112,11 +121,11 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-      firstName: { required, minLength: minLength(4) },
-      lastName: { required },
-      username: { required, minLength: minLength(6) },
-      email: { required, email },
-      password: { required, minLength: minLength(8) },
+    firstName: { required, minLength: minLength(4) },
+    lastName: { required },
+    username: { required, minLength: minLength(6) },
+    email: { required, email },
+    password: { required, minLength: minLength(8) },
   },
 
   data() {
@@ -127,6 +136,8 @@ export default {
       firstName: '',
       lastName: '',
       username: '',
+      loginError: false,
+      loginErrorMessage: '',
     };
   },
 
@@ -167,21 +178,38 @@ export default {
   },
 
   methods: {
-    signinf() {
+    signin() {
       this.$v.$touch();
+
+      this.$http.post('http://127.0.0.1:3000/token', {
+        username: this.username,
+        password: this.password,
+      }).then((response) => {
+        if (response.data.success) {
+          this.$router.push({ path: '/dashboard' });
+        } else {
+          this.loginError = true;
+          this.loginErrorMessage = response.data.message;
+        }
+      }, (response) => {
+        console.log(response);
+      });
     },
     signup() {
       this.$v.$touch();
 
-
       this.$http.post('http://127.0.0.1:3000/user', {
-          firstname: firstName,
-          lastname: lastName,
-          username,
-          email,
-          password,
-      }).then(response => {
-        
+        firstname: this.firstName,
+        lastname: this.lastName,
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      }).then((response) => {
+        if (response.data.success) {
+          this.$router.push({ path: '/dashboard' });
+        } else {
+          this.loginError = true;
+        }
       });
     },
   },
